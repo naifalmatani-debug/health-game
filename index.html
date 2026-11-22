@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مغامرة الطبيبة الصغيرة · صحة الإنسان · علوم الرابع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1f2a2e; --muted:#5b6b70; --card:rgba(255,255,255,.95); --line:#e3e9ea;
+  --ok:#22a55b; --bad:#e04848; --gold:#f4b400; --accent:#1e9e8a;
+  --font:"Tajawal","Segoe UI","Noto Sans Arabic","Geeza Pro",Tahoma,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);color:var(--ink);display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;background:#cfeef5;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer;color:inherit}
+bdi{unicode-bidi:isolate}
+
+/* header & footer */
+header{flex:none;display:flex;align-items:center;gap:10px;padding:6px 12px;background:rgba(255,255,255,.92);border-bottom:3px solid var(--accent);z-index:10;position:relative}
+.gov{box-shadow:0 4px 12px rgba(0,40,60,.12);display:flex;flex-direction:column;align-items:center;text-align:center;border:2px solid #0b6b4f;border-radius:12px;padding:4px 14px;background:#f4fbf8;font-size:12.5px;line-height:1.4;font-weight:800;color:#0b6b4f}
+.gov span:last-child{color:#334}
+.hbar{flex:1}
+.hud{display:flex;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--line);border-radius:30px;padding:3px 10px;font-weight:800;font-size:14px;white-space:nowrap}
+.ibtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:#fff;font-size:18px;display:grid;place-items:center}
+footer{flex:none;display:flex;justify-content:space-between;align-items:stretch;gap:8px;flex-wrap:nowrap;text-align:center;font-size:12.5px;line-height:1.5;padding:5px 10px calc(5px + env(safe-area-inset-bottom));background:rgba(255,255,255,.92);border-top:1px solid var(--line);color:var(--muted);z-index:10;position:relative}
+footer b{color:var(--ink)}
+.fbox{border:1.5px solid #0b6b4f;border-radius:10px;padding:3px 12px;background:#f4fbf8;color:#334;font-weight:600;min-width:120px;display:flex;flex-direction:column;justify-content:center}
+.fbox.mid{flex:0 1 auto;white-space:nowrap}
+.govwrap{flex:none;display:flex;justify-content:center;padding:8px 12px 0;position:relative;z-index:2}
+.apptitle{font-weight:900;font-size:17px;color:#0b6b4f;white-space:nowrap}
+@media (max-width:520px){footer{font-size:11px;gap:6px;padding-left:6px;padding-right:6px}.fbox{padding:2px 6px;min-width:0;flex:1}.apptitle{font-size:14px}.fbox.mid{white-space:normal}.gov{font-size:11px;padding:3px 10px}.hud .pill.sc{display:none}}
+
+/* scene */
+#scene{position:fixed;inset:0;z-index:0;overflow:hidden;transition:background 1s}
+#scene .spr{position:absolute;pointer-events:none;user-select:none;line-height:1}
+.s-map{background:linear-gradient(#d9f1ff,#f4fbff 55%,#d7f0de 56%,#bfe6c9)}
+.s-lab{background:radial-gradient(circle at 30% 30%,#f2ecff,#d7c9f5 50%,#a990e0)}
+.s-shield{background:radial-gradient(circle at 50% 40%,#ffe4e6,#f6a5b0 55%,#d9475e)}
+.s-park{background:linear-gradient(#bfe9ff,#e9f9ff 50%,#9fdc8e 51%,#5fae4f)}
+.s-kitchen{background:linear-gradient(#fff3df,#ffe2b8 60%,#e9b77a 61%,#c98b4a)}
+@keyframes bob{50%{transform:translateY(-10px) rotate(3deg)}}
+@keyframes swimL{from{transform:translateX(0) scaleX(1)}to{transform:translateX(-130vw) scaleX(1)}}
+@keyframes swimR{from{transform:translateX(0) scaleX(-1)}to{transform:translateX(130vw) scaleX(-1)}}
+@keyframes rise{from{transform:translateY(0);opacity:.0}10%{opacity:.8}to{transform:translateY(-110vh);opacity:0}}
+@keyframes fall{from{transform:translateY(0) rotate(0)}to{transform:translateY(115vh) rotate(540deg)}}
+@keyframes pulse{50%{transform:scale(1.12)}}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-140vw)}}
+@media (prefers-reduced-motion:reduce){#scene .spr{animation:none!important}}
+
+main{flex:1;position:relative;z-index:1;overflow-y:auto;overflow-x:hidden;display:flex;justify-content:center;align-items:flex-start;padding:14px 12px 18px}
+.screen{width:100%;max-width:720px;display:none;animation:pop .45s cubic-bezier(.3,1.4,.5,1)}
+.screen.on{display:block}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.card{background:var(--card);border-radius:24px;box-shadow:0 12px 30px rgba(0,40,60,.18);padding:18px 18px 20px}
+h1,h2,h3{margin:0}
+.big{border:0;border-radius:18px;background:var(--accent);color:#fff;font-weight:900;font-size:19px;padding:12px 26px;min-height:52px;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .1s}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.big:disabled{opacity:.45;cursor:default}
+.ghost{border:2px solid var(--line);background:#fff;border-radius:14px;font-weight:800;padding:8px 14px;min-height:42px;font-size:15px}
+
+/* start */
+.hero{text-align:center}
+.hero .logo{font-size:64px;animation:bob 3s ease-in-out infinite;display:inline-block}
+.hero h1{font-size:30px;font-weight:900;color:#0b6b5f;line-height:1.3;margin:6px 0}
+.hero p{font-size:17px;color:var(--muted);margin:6px 0 14px;line-height:1.7}
+.namebox{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.namebox input{font-family:inherit;font-size:19px;padding:10px 14px;border-radius:14px;border:2px solid var(--line);min-width:0;width:min(320px,100%);text-align:center}
+.namebox input:focus{outline:3px solid #9fe0d4;border-color:var(--accent)}
+.feat{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.feat span{background:#eef8f6;border-radius:12px;padding:5px 10px;font-size:14px;font-weight:700}
+
+/* map */
+.maphead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.maphead h2{font-size:22px;font-weight:900}
+.stations{display:grid;gap:12px}
+.st{display:flex;align-items:center;gap:14px;border:0;text-align:right;width:100%;background:#fff;border-radius:20px;padding:12px 14px;box-shadow:0 6px 0 var(--c),0 8px 18px rgba(0,0,0,.12);border:2.5px solid var(--c);position:relative;transition:transform .15s}
+.st:not(.lock):hover{transform:translateY(-2px)}
+.st .ic{font-size:44px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 16%,#fff);flex:none}
+.st .tx{flex:1;min-width:0}
+.st .tx b{display:block;font-size:20px;color:var(--c);font-weight:900}
+.st .tx small{display:block;font-size:14.5px;color:var(--muted);font-weight:600;line-height:1.5}
+.st .num{position:absolute;top:-10px;right:14px;background:var(--c);color:#fff;font-size:12.5px;font-weight:800;border-radius:20px;padding:1px 10px}
+.st.lock{filter:grayscale(1);opacity:.6;cursor:not-allowed}
+.st .lk{font-size:26px}
+.mini-stars{font-size:20px;letter-spacing:2px;white-space:nowrap}
+.mini-stars .off{opacity:.22}
+
+/* play */
+.topline{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.chip{background:var(--c);color:#fff;font-weight:800;border-radius:20px;padding:3px 12px;font-size:14px}
+.prog{display:flex;gap:4px;flex:1;min-width:150px}
+.prog i{flex:1;height:10px;border-radius:10px;background:#e4ecee}
+.prog i.ok{background:var(--ok)} .prog i.bad{background:var(--bad)} .prog i.cur{background:var(--c);animation:pulse 1s infinite}
+.qnum{font-size:14px;color:var(--muted);font-weight:800}
+.qtype{display:inline-block;font-size:13px;font-weight:800;border-radius:8px;padding:1px 9px;background:color-mix(in srgb,var(--c) 15%,#fff);color:var(--c);margin-bottom:6px}
+.q{font-size:22px;font-weight:800;line-height:1.6;margin:2px 0 14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts.one{grid-template-columns:1fr}
+.opt{border:2.5px solid var(--line);background:#fff;border-radius:16px;padding:12px 12px;font-size:18px;font-weight:700;min-height:60px;line-height:1.45;transition:transform .12s,background .2s,border-color .2s;display:flex;align-items:center;gap:10px;text-align:right}
+.opt .k{flex:none;width:30px;height:30px;border-radius:50%;background:#eef3f4;display:grid;place-items:center;font-weight:900;font-size:15px}
+.opt:hover:not(:disabled){border-color:var(--c);transform:translateY(-2px)}
+.opt.ok{background:#e3f7ea;border-color:var(--ok)} .opt.ok .k{background:var(--ok);color:#fff}
+.opt.bad{background:#fde8e8;border-color:var(--bad)} .opt.bad .k{background:var(--bad);color:#fff}
+.opt.gone{visibility:hidden}
+.opt:disabled{cursor:default}
+.tfopts .opt{justify-content:center;font-size:22px;font-weight:900;min-height:76px}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.glow{animation:glow .8s}
+@keyframes glow{40%{box-shadow:0 0 0 6px rgba(34,165,91,.35),0 12px 30px rgba(0,40,60,.18)}}
+
+/* sort */
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:52px;padding:8px;border-radius:14px;background:#f3f7f8;margin-bottom:10px}
+.item{border:2px solid var(--line);background:#fff;border-radius:30px;padding:7px 14px;font-size:17px;font-weight:800;min-height:44px;transition:transform .15s}
+.item.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);transform:scale(1.08)}
+.item.ok{border-color:var(--ok);background:#e3f7ea}.item.bad{border-color:var(--bad);background:#fde8e8}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:2.5px dashed var(--c);border-radius:16px;min-height:120px;padding:8px;background:#fff;display:flex;flex-direction:column;gap:6px;align-items:center;transition:background .2s}
+.bin.hot{background:color-mix(in srgb,var(--c) 10%,#fff)}
+.bin h4{margin:0 0 2px;font-size:16px;color:var(--c);font-weight:900}
+.bin .item{font-size:15px;padding:4px 10px;min-height:36px}
+.hintline{font-size:14px;color:var(--muted);text-align:center;margin:-4px 0 8px;font-weight:600}
+
+/* chain */
+.chainrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;min-height:58px;padding:8px;border-radius:14px;background:#f3f7f8;margin-bottom:10px}
+.slot{min-width:84px;min-height:44px;border:2px dashed #b9c8cc;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#9aaaae;padding:4px 8px}
+.slot.f{border-style:solid;border-color:var(--c);color:var(--ink);background:#fff}
+.slot.ok{border-color:var(--ok);background:#e3f7ea}.slot.bad{border-color:var(--bad);background:#fde8e8}
+.arr{font-weight:900;color:var(--c);font-size:18px}
+.item.used{opacity:.3;pointer-events:none}
+
+/* feedback */
+.fb{margin-top:14px;border-radius:16px;padding:12px 14px;font-size:16.5px;line-height:1.7;display:none}
+.fb.on{display:block;animation:pop .35s}
+.fb.ok{background:#e6f7ec;border-right:6px solid var(--ok)} .fb.bad{background:#fdecec;border-right:6px solid var(--bad)}
+.fb b.t{font-size:19px;display:block}
+.fb .pg{display:inline-block;font-size:13px;font-weight:800;background:#fff;border-radius:8px;padding:0 8px;margin-top:4px;color:var(--muted)}
+.actions{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap}
+.life{display:flex;gap:6px}
+.life button{border:2px solid var(--line);background:#fff;border-radius:12px;padding:6px 10px;font-weight:800;font-size:14px;min-height:40px}
+.life button:disabled{opacity:.35;cursor:default}
+.hintbox{margin-top:10px;background:#fff8dc;border-radius:12px;padding:8px 12px;font-size:15.5px;display:none;border-right:5px solid var(--gold)}
+.hintbox.on{display:block;animation:pop .3s}
+.float{position:fixed;z-index:50;font-weight:900;font-size:26px;color:var(--ok);pointer-events:none;animation:floatup 1.1s ease-out forwards;text-shadow:0 2px 0 #fff}
+@keyframes floatup{to{transform:translateY(-70px);opacity:0}}
+.streak{animation:pulse .6s}
+
+/* result */
+.res{text-align:center}
+.res .bigstars{font-size:58px;letter-spacing:6px;margin:8px 0}
+.res .bigstars span{display:inline-block;opacity:.18;transform:scale(.6);transition:all .5s cubic-bezier(.3,1.6,.5,1)}
+.res .bigstars span.on{opacity:1;transform:scale(1)}
+.res h2{font-size:26px;font-weight:900}
+.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stat{background:#f3f7f8;border-radius:16px;padding:8px 16px;min-width:110px}
+.stat b{display:block;font-size:26px;color:var(--c)}
+.stat small{font-size:13.5px;color:var(--muted);font-weight:700}
+.review{text-align:right;margin:10px 0;display:grid;gap:6px}
+.review div{font-size:15px;background:#fdecec;border-radius:10px;padding:6px 10px;line-height:1.6}
+
+/* certificate */
+.cert{text-align:center;background:#fffdf5;border:10px double #c9a227;border-radius:20px;padding:20px 16px;position:relative}
+.cert .govc{font-size:14px;font-weight:800;color:#0b6b4f;line-height:1.6}
+.cert h2{font-size:30px;color:#9a7300;margin:10px 0 4px;font-weight:900}
+.cert .nm{font-size:32px;font-weight:900;color:#0b6b5f;border-bottom:2px dashed #c9a227;display:inline-block;padding:0 20px 4px;margin:8px 0}
+.cert p{font-size:17px;line-height:1.8;margin:6px 0}
+.cert .mini-stars{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;font-size:18px}
+.cert .sig{display:flex;justify-content:space-between;margin-top:16px;font-size:15px;font-weight:800;flex-wrap:wrap;gap:8px}
+.cert .medal{font-size:56px}
+
+#fx{position:fixed;inset:0;pointer-events:none;z-index:40}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:60;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}
+.modal .card{max-width:420px;text-align:center}
+</style>
+</head>
+<body>
+<div id="scene" class="s-map"></div>
+<canvas id="fx"></canvas>
+
+<header>
+  <div class="apptitle">🩺 مغامرة الطبيبة الصغيرة</div>
+  <div class="hbar"></div>
+  <div class="hud">
+    <span class="pill sc" id="hudScore">⭐ <bdi dir="ltr">٠</bdi></span>
+    <button class="ibtn" id="bMap" title="الخريطة" style="display:none">🗺️</button>
+    <button class="ibtn" id="bSound" title="الصوت">🔊</button>
+  </div>
+</header>
+<div class="govwrap"><div class="gov"><span>المملكة العربية السعودية</span><span>وزارة التعليم</span><span>إدارة تعليم مكة</span><span>مدرسة خولة بنت حكيم</span></div></div>
+
+<main>
+  <!-- start -->
+  <section class="screen on" id="sStart"><div class="card hero">
+    <div class="logo">🩺</div>
+    <h1>مغامرةُ الطبيبةِ الصغيرة</h1>
+    <p>الوحدة الثالثة: <b>صحة الإنسان</b> · علوم الصف الرابع<br>أربعُ محطّات، في كلّ محطّة <bdi dir="ltr">١٠</bdi> أسئلة. اجمعي النجوم وافتحي المحطّة التالية!</p>
+    <div class="namebox"><input id="nameIn" maxlength="30" placeholder="اكتبي اسمكِ هنا" autocomplete="off"><button class="big" id="bGo">ابدئي الرحلة ←</button></div>
+    <div class="feat"><span>🔬 المختبر</span><span>🛡️ الحصن</span><span>🏃‍♀️ الملعب</span><span>🍎 المطبخ</span><span>🏅 شهادة في النهاية</span></div>
+  </div></section>
+
+  <!-- map -->
+  <section class="screen" id="sMap"><div class="card">
+    <div class="maphead"><h2 id="hello"></h2><div style="display:flex;gap:6px;align-items:center"><span class="pill" id="totStars"></span><button class="ghost" id="bReset">بدء من جديد</button></div></div>
+    <div class="stations" id="stations"></div>
+    <div style="text-align:center;margin-top:14px"><button class="big" id="bCert" style="display:none;background:#c9a227">🏅 عرض الشهادة</button></div>
+  </div></section>
+
+  <!-- play -->
+  <section class="screen" id="sPlay"><div class="card" id="qcard">
+    <div class="topline"><span class="chip" id="stChip"></span><div class="prog" id="prog"></div><span class="qnum" id="qNum"></span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="qtype" id="qType"></span><span class="pill" id="streak" style="visibility:hidden">🔥 <bdi dir="ltr" id="stN"></bdi></span></div>
+    <div class="q" id="qText"></div>
+    <div id="qBody"></div>
+    <div class="hintbox" id="hintBox"></div>
+    <div class="fb" id="fb"></div>
+    <div class="actions">
+      <div class="life"><button id="bHint">💡 تلميح</button><button id="bHalf">✂️ حذف إجابتين</button></div>
+      <div style="display:flex;gap:8px"><button class="big" id="bCheck" style="display:none">تحقّقي ✓</button><button class="big" id="bNext" style="display:none">التالي ←</button></div>
+    </div>
+  </div></section>
+
+  <!-- result -->
+  <section class="screen" id="sRes"><div class="card res">
+    <div style="font-size:46px" id="resIc"></div>
+    <h2 id="resT"></h2>
+    <div class="bigstars" id="resStars"><span>⭐</span><span>⭐</span><span>⭐</span></div>
+    <div class="stats"><div class="stat"><b id="rC"></b><small>إجابات صحيحة</small></div><div class="stat"><b id="rP"></b><small>نقاط المحطة</small></div><div class="stat"><b id="rS"></b><small>أطول سلسلة 🔥</small></div></div>
+    <div class="review" id="rRev"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="ghost" id="bAgain">🔁 إعادة المحطة</button><button class="big" id="bOn"></button></div>
+  </div></section>
+
+  <!-- certificate -->
+  <section class="screen" id="sCert"><div class="card"><div class="cert">
+    <div class="govc">المملكة العربية السعودية · وزارة التعليم<br>إدارة تعليم مكة · مدرسة خولة بنت حكيم</div>
+    <div class="medal">🏅</div>
+    <h2>شهادةُ الطبيبةِ الصغيرة</h2>
+    <p>تُمنحُ هذه الشهادة للطالبة</p>
+    <div class="nm" id="cName"></div>
+    <p>لإتمامها محطّاتِ وحدةِ <b>صحة الإنسان</b> الأربع<br>وجمعِها <b id="cStars"></b> نجمة و<b id="cPts"></b> نقطة.</p>
+    <div class="mini-stars" id="cRow"></div>
+    <div class="sig"><span>التاريخ: <bdi id="cDate"></bdi></span><span>المعلمة: وطفا المعطاني</span></div>
+  </div>
+  <div style="text-align:center;margin-top:12px"><button class="big" id="bBack">العودة إلى الخريطة</button></div>
+  </div></section>
+</main>
+
+<footer><div class="fbox"><span>مديرة المدرسة</span><b>نجاة الشريف</b></div><div class="fbox mid"><span>جميع الحقوق محفوظة © <bdi dir="ltr">٢٠٢٦</bdi></span><span>مدرسة خولة بنت حكيم</span></div><div class="fbox"><span>إعداد المعلمة</span><b>وطفا المعطاني</b></div></footer>
+
+<div class="modal" id="mReset"><div class="card"><h3 style="font-size:20px;margin-bottom:8px">بدء الرحلة من جديد؟</h3><p style="margin:0 0 14px;color:var(--muted)">ستُمحى النجوم والنقاط المحفوظة.</p>
+  <div style="display:flex;gap:8px;justify-content:center"><button class="ghost" id="mNo">إلغاء</button><button class="big" id="mYes" style="background:var(--bad)">نعم، من جديد</button></div></div></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const AR='٠١٢٣٤٥٦٧٨٩', ar=n=>String(n).replace(/\d/g,d=>AR[d]);
+const B=s=>`<bdi dir="ltr">${s}</bdi>`;
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ============ DATA (كتاب العلوم – الصف الرابع – الوحدة الثالثة: صحة الإنسان) ============ */
+const sleepDay=8, sleepWeek=sleepDay*7;   // ص ١٦٩ و١٧١: نحو ٨ ساعات نوم ليلًا
+const STAGES=[
+ {id:'lab',name:'محطة المختبر',sub:'الدرس الأول: الأمراض',pages:'ص ١٤٠ إلى ١٤٧',ic:'🔬',c:'#7b4fc4',qs:[
+  {t:'mc',q:'حالةٌ غيرُ طبيعيةٍ تؤثّرُ على جسمِ المخلوقِ الحيّ، وترتبطُ غالبًا بأعراضٍ وعلاماتٍ مختلفة:',o:['المرض','الصحة','المناعة','التطعيم'],x:'هذا تعريف المرض، وقد ينتج عن أسباب خارجية كالأمراض المعدية، أو عن مشكلات داخلية كالأمراض غير المعدية.',p:'١٤٢'},
+  {t:'sort',q:'صنّفي الأمراضَ في مكانها الصحيح:',bins:['أمراض معدية','أمراض غير معدية'],items:[['الأنفلونزا',0],['السكري',1],['السل',0],['السمنة',1],['الكوليرا',0],['فقر الدم',1]],x:'الأمراض غير المعدية لا تنتقل من المصاب إلى السليم، مثل السمنة والسكري وفقر الدم. أمّا المعدية فتسببها الفيروسات والبكتيريا والفطريات الضارة.',p:'١٤٢ و١٤٣'},
+  {t:'mc',q:'مرضٌ مزمنٌ غيرُ معدٍ، ينتجُ عن خللٍ في مستوياتِ الأنسولين الذي يُفرزه البنكرياس:',o:['السكري','الأنفلونزا','السل','القدم الرياضي'],x:'السكري مرض مزمن غير معدٍ، وقد ينتج عن عوامل وراثية.',p:'١٤٢'},
+  {t:'mc',q:'تفاعلُ جهازِ المناعةِ بشدّةٍ ضدَّ الموادِّ الغريبة يُسمّى:',o:['الحساسية','فقر الدم','السمنة','الكوليرا'],x:'قد تكون الحساسية من بعض أنواع الأطعمة أو من لدغ الحشرات، وقد يُصاب بها بعض الأشخاص نتيجة عوامل وراثية.',p:'١٤٣'},
+  {t:'mc',q:'حالةٌ يفتقرُ فيها الدمُ إلى ما يكفي من خلايا الدمِ الحمراء:',o:['فقر الدم','الحساسية','السكري','الحصبة'],x:'من أسباب فقر الدم نقص الحديد أو العوامل الوراثية.',p:'١٤٣'},
+  {t:'sort',q:'صنّفي الأمراضَ حسبَ مسبِّبِها:',bins:['تسبّبها فيروسات','تسبّبها بكتيريا'],items:[['الأنفلونزا',0],['السل',1],['الحصبة',0],['الكوليرا',1],['كورونا المستجد',0],['التهاب الحلق',1]],x:'الفيروسات تسبب الأنفلونزا والحصبة وكورونا المستجد. والبكتيريا الضارة تسبب التهاب الحلق والسل والكوليرا والالتهاب الرئوي.',p:'١٤٤'},
+  {t:'mc',q:'القدمُ الرياضيُّ طفحٌ جلديٌّ معدٍ، سببُه:',o:['الفطريات','الفيروسات','البكتيريا','نقص الحديد'],x:'الفطريات هي المسبب الرئيس للقدم الرياضي، وتنتشر في الأماكن الدافئة والرطبة بين أصابع القدم.',p:'١٤٥'},
+  {t:'tf',q:'جميعُ أنواعِ البكتيريا ضارّة.',a:false,x:'خطأ؛ فمن البكتيريا النافعة البكتيريا الموجودة في الجهاز الهضمي وبكتيريا اللبن.',p:'١٤٤'},
+  {t:'mc',q:'درجةُ الحرارةِ الطبيعيةُ لجسمِ الإنسان هي:',o:['٣٧ درجة سيليزية','٣٩ درجة سيليزية','٢٧ درجة سيليزية','٢٩ درجة سيليزية'],h:'ارتفاع الحرارة عن هذه الدرجة علامة على المرض.',x:'تكون مصابًا بالمرض إذا ارتفعت درجة حرارة جسمك إلى أعلى من ٣٧ درجة سيليزية.',p:'١٤٦'},
+  {t:'mc',q:'ما الذي يجبُ عليّ فعلُه عندما أُصابُ بالمرض؟',o:['زيارة الطبيب والالتزام بتعليماته','الذهاب إلى الأماكن المزدحمة','التوقف عن الأكل تمامًا','مشاركة أدواتي مع صديقاتي'],x:'وكذلك تناول الطعام الصحي، والتزام الراحة وعدم الخروج إلا للضرورة، والاهتمام بالنظافة الشخصية وغسل اليدين بانتظام.',p:'١٤٦'}
+ ]},
+ {id:'shield',name:'محطة الحصن',sub:'الدرس الثاني: العدوى وانتقالها',pages:'ص ١٥٠ إلى ١٥٧',ic:'🛡️',c:'#c62845',qs:[
+  {t:'mc',q:'انتقالُ المرضِ من المخلوقِ الحيِّ المصابِ إلى المخلوقِ الحيِّ السليم يُسمّى:',o:['العدوى','المناعة','التطعيم','الحساسية'],x:'وتحدث العدوى بصور مختلفة حسب نوع المسبب والمرض والبيئة التي يتكاثر فيها.',p:'١٥٢'},
+  {t:'mc',q:'الكلابُ والفئرانُ والطيورُ والبعوضُ والذبابُ مخلوقاتٌ قد تنقلُ المرض، وتُعرَف بـ:',o:['النواقل الحيوية','المنتجات','خلايا الدم البيضاء','المحللات'],x:'المخلوقات الحية الحاملة للمرض تُعرف بالنواقل الحيوية.',p:'١٥٢'},
+  {t:'mc',q:'يُصابُ الإنسانُ بمرضِ الملاريا عندما تلسعُه:',o:['أنثى بعوض الأنوفيليس الحاملة للمرض','نحلة','ذبابة منزلية','نملة'],x:'يُصاب الإنسان بالملاريا عندما تلسعه أنثى بعوض الأنوفيليس الحاملة لمسبب المرض.',p:'١٥٠'},
+  {t:'sort',q:'صنّفي الأفعالَ التالية:',bins:['تنقل العدوى','تحمي من العدوى'],items:[['العطاس في وجوه الآخرين',0],['غسل اليدين',1],['تناول الطعام المكشوف',0],['أخذ التطعيمات',1],['استخدام الأدوات الملوثة',0],['تغطية الطعام',1]],x:'تنتقل العدوى بالاتصال المباشر، والسعال والعطاس، والأطعمة المكشوفة والأدوات الملوثة. ونحمي أنفسنا بالنظافة والتطعيم.',p:'١٥٣ و١٥٦'},
+  {t:'mc',q:'قدرةُ الجسمِ على التصدّي لمسبّباتِ الأمراض تُسمّى:',o:['المناعة','العدوى','المرض','الحساسية'],x:'والمناعة إمّا أن تكون مناعة طبيعية أو مناعة اصطناعية.',p:'١٥٤'},
+  {t:'mc',q:'ما الخلايا التي تهاجمُ مسبّباتِ المرضِ وتقضي عليها؟',o:['خلايا الدم البيضاء','خلايا الدم الحمراء','الصفائح الدموية','الخلايا العصبية'],x:'خلايا الدم البيضاء هي الخلايا المسؤولة عن حماية الجسم ومحاربة الأمراض.',p:'١٥٤'},
+  {t:'mc',q:'يُعدُّ خطَّ الدفاعِ الأوّلِ عن الجسم:',o:['الجلد','القلب','العظام','المعدة'],x:'الجلد خط الدفاع الأول، وكذلك الإفرازات مثل الدمع ومخاط الأنف وشمع الأذن واللعاب والعصارة المعدية.',p:'١٥٤'},
+  {t:'mc',q:'لا يُصابُ الإنسانُ بالجُدَري المائيِّ إلا مرّةً واحدةً غالبًا؛ بسبب:',o:['المناعة الطبيعية','المناعة الاصطناعية','الحساسية','فقر الدم'],x:'المناعة الطبيعية تدوم طويلًا؛ لذلك لا تُصاب بأمراض معينة أكثر من مرة كجدري الماء.',p:'١٥٥'},
+  {t:'mc',q:'يمكنُ الحصولُ على الطُّعم (اللقاح) عن طريق:',o:['الحقن أو الفم','الأذن فقط','لمس المصاب','شرب المشروبات الغازية'],x:'يمكن الحصول على الطُّعم بالحقن أو تناول اللقاح عن طريق الفم، ويتكون من أجسام تمنحك مناعة ضد مرض معيّن.',p:'١٥٦'},
+  {t:'tf',q:'المناعةُ الاصطناعيةُ قد تدومُ مدّةً قصيرة، فيحتاجُ الإنسانُ إلى أخذِ اللقاحِ أكثرَ من مرّة.',a:true,x:'صحيح؛ تتكون المناعة الاصطناعية بالتطعيم واللقاحات، وقد يبقى بعضها مدى الحياة.',p:'١٥٥'}
+ ]},
+ {id:'park',name:'محطة الملعب',sub:'الدرس الأول: المحافظة على الصحة',pages:'ص ١٦٤ إلى ١٧١',ic:'🏃‍♀️',c:'#1f8f4e',qs:[
+  {t:'mc',q:'حالةُ اكتمالِ السلامةِ الجسديةِ والعقليةِ والنفسية، وليست مجرّدَ انعدامِ المرضِ أو العجز:',o:['الصحة','الرياضة','المناعة','العدوى'],x:'هذا تعريف الصحة كما في الكتاب.',p:'١٦٦'},
+  {t:'mc',q:'سلوكياتٌ تفيدُ الإنسانَ وتساعدُه على المحافظةِ على جسمِه بصحّةٍ سليمة:',o:['العادات الصحية','الأمراض المزمنة','النواقل الحيوية','الوجبات السريعة'],x:'لكي تحافظ على صحتك لا بد من اتباع العادات الصحية.',p:'١٦٦'},
+  {t:'mc',q:'متى يجبُ علينا غسلُ اليدين؟',o:['باستمرار، وبعد مسك الأشياء الملوثة، وقبل الطعام وبعده','مرة واحدة في الأسبوع','عند الاستيقاظ فقط','عندما نمرض فقط'],x:'تنتقل الأوساخ إلى أيدينا وتسبب الأمراض عند ملامستنا للأشياء غير النظيفة.',p:'١٦٦'},
+  {t:'sort',q:'صنّفي العاداتِ التالية:',bins:['عادات صحية','عادات غير صحية'],items:[['النوم مبكرًا',0],['الإكثار من السكريات',1],['شرب الماء بكميات كافية',0],['الإكثار من المشروبات الغازية',1],['تنظيف الأسنان بالفرشاة',0],['استخدام أدوات الآخرين الشخصية',1]],x:'الغذاء الصحي المتوازن يعني تجنّب الإكثار من الدهون والسكريات والمشروبات الغازية، وشرب كميات كافية من الماء.',p:'١٦٧ و١٦٨'},
+  {t:'mc',q:'يحتاجُ الجسمُ ليلًا إلى النومِ نحو:',o:['٨ ساعات','ساعتين','٣ ساعات','١٥ ساعة'],x:'يحتاج الجسم إلى ٨ ساعات تقريبًا من النوم ليلًا، لذا يجب أن نحرص على النوم المبكر.',p:'١٦٩'},
+  {t:'mc',q:`إذا كان معدّلُ ساعاتِ النومِ المناسبةِ ${ar(sleepDay)} ساعاتٍ في اليوم، فكم ساعةً ننامُ خلالَ أسبوع؟`,o:[ar(sleepWeek),ar(sleepDay+7),ar(sleepWeek-8),ar(sleepWeek+8)],h:'الأسبوع ٧ أيام، فاضربي في ٧.',x:`<b>${ar(sleepDay)} × ٧ = ${ar(sleepWeek)}</b> ساعة في الأسبوع.`,p:'١٧١'},
+  {t:'tf',q:'الاستحمامُ أفضلُ طريقةٍ للتخلّصِ من كافّةِ الأوساخِ التي تتراكمُ على أجسامنا.',a:true,x:'صحيح، كما يجب تقليم الأظافر وغسل الشعر والعناية بنظافة الأسنان.',p:'١٦٧'},
+  {t:'mc',q:'لماذا يجبُ عدمُ استخدامِ أدواتِ الآخرينَ الشخصية؟',o:['لأنها من أكثر مسببات نقل العدوى','لأنها غالية الثمن','لأنها تقوّي المناعة','لأنها تزيد النشاط'],x:'تُعدّ الأدوات الشخصية من أكثر مسببات نقل العدوى بين الأشخاص.',p:'١٦٧'},
+  {t:'mc',q:'لحمايةِ العينينِ من أشعّةِ الشمسِ في فصلِ الصيف نرتدي:',o:['النظارة الشمسية','القفازات','الملابس الثقيلة','الحذاء الرياضي'],x:'ونحرص على ارتداء الملابس المناسبة لدرجة حرارة الجو، وتقليل التعرض لأشعة الشمس الحارة.',p:'١٦٧'},
+  {t:'mc',q:'من فوائدِ المواظبةِ على ممارسةِ الرياضة:',o:['تقوية عضلات الجسم','زيادة الوزن الزائد','إضعاف الجهاز التنفسي','الابتعاد عن الآخرين'],x:'والرياضة أيضًا تزيد كفاءة الجهاز التنفسي، وتساعد على التخلص من الوزن الزائد، وعلى تكوين صداقات.',p:'١٧٠'}
+ ]},
+ {id:'kitchen',name:'محطة المطبخ',sub:'الدرس الثاني: الغذاء والتغذية',pages:'ص ١٧٢ إلى ١٧٩',ic:'🍎',c:'#e06a12',qs:[
+  {t:'mc',q:'عندما تحتوي الوجبةُ على جميعِ أنواعِ الغذاءِ التي يحتاجُ إليها الجسمُ بكمياتٍ مناسبة، يُسمّى غذاؤنا:',o:['غذاءً متوازنًا','وجبة سريعة','هرمًا غذائيًّا','غذاءً ناقصًا'],x:'تناول الكمية المناسبة من الأطعمة كل يوم يساعد على المحافظة على صحة جسمك ونموه.',p:'١٧٤'},
+  {t:'mc',q:'كم مجموعةً من الموادِّ الغذائيةِ يتضمّنُها الطعام؟',o:['ست مجموعات','ثلاث مجموعات','مجموعتان','عشر مجموعات'],h:'عُدّي: الكربوهيدرات والبروتينات و…',x:'وهي: الكربوهيدرات والبروتينات والدهون والفيتامينات والأملاح المعدنية والماء.',p:'١٧٤'},
+  {t:'mc',q:'المصدرُ الرئيسُ للطاقةِ في الجسمِ غالبًا:',o:['الكربوهيدرات','الفيتامينات','الماء','الأملاح المعدنية'],x:'من مصادر الكربوهيدرات: رقائق الذرة والحبوب والخبز والتمر والبطاطس والأرز.',p:'١٧٥'},
+  {t:'sort',q:'صنّفي الأطعمةَ إلى مجموعتين:',bins:['كربوهيدرات','بروتينات'],items:[['الأرز',0],['البيض',1],['الخبز',0],['السمك',1],['البطاطس',0],['البقوليات',1]],x:'البروتينات مصادرها: البقوليات واللحوم والأسماك والدواجن والبيض والجبن والحليب.',p:'١٧٥'},
+  {t:'mc',q:'تساعدُ الجسمَ على النموِّ وتعويضِ الخلايا التالفة:',o:['البروتينات','الدهون','الأملاح المعدنية','الألياف'],x:'البروتينات تساعد الجسم على النمو وتعويض الخلايا التالفة فيه.',p:'١٧٥'},
+  {t:'mc',q:'الإكثارُ من تناولِ الوجباتِ الغنيّةِ بالدهونِ يُسبّب:',o:['السمنة وأمراض القلب','قوة العظام','زيادة المناعة','تحسّن النظر'],x:'الدهون تزوّد الجسم بالطاقة والدفء، لكن الإكثار منها يسبب السمنة وأمراض القلب.',p:'١٧٥'},
+  {t:'mc',q:'الكالسيومُ والحديدُ من:',o:['الأملاح المعدنية','الفيتامينات','الكربوهيدرات','الدهون'],x:'تساعد الأملاح المعدنية على تكوين العظام وخلايا الدم الجديدة.',p:'١٧٦'},
+  {t:'mc',q:'يُشكّلُ الماءُ من جسمِ الإنسانِ تقريبًا:',o:['ثلثي الجسم','نصف الجسم','ربع الجسم','عُشر الجسم'],x:'يساعد الماء على الهضم وعلى التخلص من الفضلات والمحافظة على درجة حرارة الجسم ثابتة.',p:'١٧٧'},
+  {t:'mc',q:'يُقسِّمُ الهرمُ الغذائيُّ الأطعمةَ إلى:',o:['خمس مجموعات رئيسة','ست مجموعات رئيسة','مجموعتين','ثماني مجموعات'],h:'انتبهي: هذا سؤال عن الهرم، لا عن المواد الغذائية.',x:'مجموعة الحبوب، والخضروات والفواكه، واللحوم والأسماك، والحليب ومشتقاته، والدهون.',p:'١٧٨'},
+  {t:'tf',q:'يساعدُنا الهرمُ الغذائيُّ على أن نتناولَ طعامًا أكثرَ من القطاعِ الأصغرِ من الهرم.',a:false,x:'خطأ؛ نتناول طعامًا أكثر من القطاع الأكبر من الهرم، وأقل من القطاع الأصغر منه.',p:'١٧٨'}
+ ]}
+];
+const TYPE={mc:'اختيار من متعدد',tf:'صواب أم خطأ',fo:'حقيقة أم رأي',sort:'صنّفي',chain:'رتّبي السلسلة'};
+const PRAISE=['أحسنتِ!','رائعة!','ممتاز يا بطلة!','إجابة ذكية!','عالمة صغيرة!','تألّقتِ!'];
+
+/* ============ STATE ============ */
+let P=store.get('health3-progress')||{name:'',best:{}};   // best[id]={stars,pts,correct}
+let G=null; // current run
+const save=()=>store.set('health3-progress',P);
+const starsOf=c=>c>=9?3:c>=7?2:c>=5?1:0;
+const unlocked=i=>i===0||!!P.best[STAGES[i-1].id];
+const totalStars=()=>STAGES.reduce((s,st)=>s+(P.best[st.id]?.stars||0),0);
+const totalPts=()=>STAGES.reduce((s,st)=>s+(P.best[st.id]?.pts||0),0);
+
+/* ============ SOUND ============ */
+let muted=store.get('health3-muted')===true, ac=null;
+function tone(f,d,type='sine',v=.15,when=0){ if(muted) return; try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); const t=ac.currentTime+when; const o=ac.createOscillator(), g=ac.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+.02); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d+.05);}catch(e){} }
+const SND={
+  click:()=>tone(520,.08,'triangle',.08),
+  ok:()=>{[523,659,784].forEach((f,i)=>tone(f,.22,'triangle',.14,i*.09))},
+  bad:()=>{tone(220,.25,'sawtooth',.07);tone(165,.35,'sawtooth',.06,.12)},
+  star:i=>tone(660+i*220,.3,'triangle',.15),
+  win:()=>{[523,659,784,1046,784,1046].forEach((f,i)=>tone(f,.28,'triangle',.13,i*.13))},
+  hint:()=>tone(880,.15,'sine',.1)
+};
+function setMute(m){muted=m; store.set('health3-muted',m); $('#bSound').textContent=m?'🔇':'🔊'}
+$('#bSound').onclick=()=>{setMute(!muted); SND.click()}; setMute(muted);
+
+/* ============ FX: confetti ============ */
+const cv=$('#fx'), cx=cv.getContext('2d'); let parts=[], raf=0;
+function resize(){cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio}
+addEventListener('resize',resize); resize();
+function confetti(n=60,x=innerWidth/2,y=innerHeight/2,spread=1){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const cols=['#f4b400','#22a55b','#1e88e5','#e04848','#8e44ad','#ff7a00'];
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2, s=(3+Math.random()*7)*spread; parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,r:4+Math.random()*5,c:cols[i%cols.length],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:90+Math.random()*50})}
+  if(!raf) loop();
+}
+function loop(){ const d=devicePixelRatio; cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life>0); parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.22;p.vx*=.99;p.rot+=p.vr;p.life--; cx.save(); cx.translate(p.x*d,p.y*d); cx.rotate(p.rot); cx.globalAlpha=Math.min(1,p.life/30); cx.fillStyle=p.c; cx.fillRect(-p.r*d/2,-p.r*d/4,p.r*d,p.r*d/2); cx.restore()});
+  raf=parts.length?requestAnimationFrame(loop):0; if(!raf) cx.clearRect(0,0,cv.width,cv.height) }
+function floatText(txt,el){ const r=el.getBoundingClientRect(); const f=document.createElement('div'); f.className='float'; f.innerHTML=txt; f.style.left=(r.left+r.width/2-30)+'px'; f.style.top=(r.top)+'px'; document.body.appendChild(f); setTimeout(()=>f.remove(),1200) }
+
+/* ============ SCENES ============ */
+const SC={
+ map:{sprites:[['☁️',3,'drift',60,8],['☁️',2,'drift',80,18],['💊',2,'bob',5,62],['🍏',3,'bob',5,80],['🩺',1,'bob',4,52]]},
+ lab:{sprites:[['🦠',9,'bob',5,50],['🦠',6,'rise',14,100],['🧫',3,'bob',7,80],['🔬',1,'bob',6,86],['🧪',3,'bob',5,90],['🫧',8,'rise',10,100]]},
+ shield:{sprites:[['🩸',8,'swimL',16,45],['⚪',6,'swimR',18,65],['🦠',5,'swimL',20,80],['🛡️',2,'bob',5,88],['💉',2,'bob',6,30]]},
+ park:{sprites:[['☀️',1,'pulse',4,8],['🌳',5,'bob',9,62],['⚽',2,'bob',3,86],['🏃‍♀️',1,'swimR',22,74],['🚴‍♀️',1,'swimL',26,82],['☁️',3,'drift',50,14],['💧',3,'bob',5,90]]},
+ kitchen:{sprites:[['🍎',3,'bob',5,82],['🥦',3,'bob',6,88],['🥕',3,'fall',12,-8],['🍞',2,'bob',5,90],['🥛',2,'bob',6,84],['🐟',1,'bob',5,92],['🍇',2,'fall',14,-8],['💧',3,'bob',5,74]]}
+};
+function setScene(k){
+  const s=$('#scene'); s.className='s-'+k; s.innerHTML='';
+  SC[k].sprites.forEach(([e,n,anim,dur,top])=>{ for(let i=0;i<n;i++){
+    const d=document.createElement('span'); d.className='spr'; d.textContent=e;
+    const size=anim==='rise'?14+Math.random()*14:26+Math.random()*30;
+    d.style.fontSize=size+'px'; d.style.opacity=k==='map'?.9:.75;
+    let left= Math.random()*100, tp=top+(Math.random()*8-4);
+    if(anim==='swimL'||anim==='drift') left=100+Math.random()*30;
+    if(anim==='swimR') left=-15-Math.random()*30;
+    d.style.left=left+'vw'; d.style.top=tp+'vh';
+    const delay=-(Math.random()*dur);
+    d.style.animation=`${anim} ${dur*(.8+Math.random()*.5)}s ${anim==='bob'||anim==='pulse'?'ease-in-out':'linear'} ${delay}s infinite`;
+    s.appendChild(d);
+  }});
+}
+
+/* ============ SCREENS ============ */
+function show(id){ $$('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); $('main').scrollTop=0; $('#bMap').style.display=(id==='sPlay'||id==='sRes'||id==='sCert')?'':'none'; updHud() }
+function updHud(){ $('#hudScore').innerHTML='⭐ '+B(ar(totalPts()+(G&&!G.done?G.pts:0))) }
+
+/* start */
+$('#nameIn').value=P.name||'';
+function go(){ const n=$('#nameIn').value.trim(); if(!n){ $('#nameIn').classList.add('shake'); setTimeout(()=>$('#nameIn').classList.remove('shake'),500); $('#nameIn').focus(); return } P.name=n; save(); SND.click(); renderMap() }
+$('#bGo').onclick=go; $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter') go()});
+if(P.name){ setScene('map'); renderMap() } else setScene('map');
+
+/* map */
+function renderMap(){
+  G=null; setScene('map'); document.documentElement.style.setProperty('--accent','#1e9e8a');
+  $('#hello').textContent='مرحبًا يا '+P.name+' 👋';
+  $('#totStars').innerHTML='⭐ '+B(ar(totalStars())+' / '+ar(12));
+  $('#stations').innerHTML=STAGES.map((s,i)=>{const b=P.best[s.id], lk=!unlocked(i);
+    return `<button class="st ${lk?'lock':''}" data-i="${i}" style="--c:${s.c}"><span class="num">المحطة ${ar(i+1)}</span><span class="ic">${s.ic}</span>
+    <span class="tx"><b>${s.name}</b><small>${s.sub} · ${s.pages}</small></span>
+    ${lk?'<span class="lk">🔒</span>':`<span class="mini-stars">${[0,1,2].map(k=>`<span class="${b&&k<b.stars?'':'off'}">⭐</span>`).join('')}</span>`}</button>`}).join('');
+  $$('.st').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i; if(!unlocked(i)){ b.classList.add('shake'); SND.bad(); setTimeout(()=>b.classList.remove('shake'),500); return } SND.click(); startStage(i) });
+  $('#bCert').style.display=STAGES.every(s=>P.best[s.id])?'':'none';
+  show('sMap');
+}
+$('#bMap').onclick=()=>{SND.click(); renderMap()};
+$('#bReset').onclick=()=>$('#mReset').classList.add('on');
+$('#mNo').onclick=()=>$('#mReset').classList.remove('on');
+$('#mYes').onclick=()=>{ const n=P.name; P={name:n,best:{}}; save(); $('#mReset').classList.remove('on'); renderMap() };
+$('#bCert').onclick=showCert; $('#bBack').onclick=renderMap;
+
+/* play */
+function startStage(i){
+  const s=STAGES[i]; document.documentElement.style.setProperty('--accent',s.c);
+  G={i,s,k:0,pts:0,correct:0,streak:0,maxStreak:0,res:[],hint:false,half:false,wrong:[]};
+  setScene(s.id); $('#qcard').style.setProperty('--c',s.c); $('#sRes .card').style.setProperty('--c',s.c);
+  $('#stChip').textContent=s.ic+' '+s.name; show('sPlay'); renderQ();
+}
+function renderQ(){
+  const q=G.s.qs[G.k]; G.answered=false;
+  $('#prog').innerHTML=G.s.qs.map((_,j)=>`<i class="${j<G.k?(G.res[j]?'ok':'bad'):j===G.k?'cur':''}"></i>`).join('');
+  $('#qNum').innerHTML='السؤال '+B(ar(G.k+1)+' / '+ar(10));
+  $('#qType').textContent=TYPE[q.t];
+  $('#qText').innerHTML=q.q;
+  $('#fb').className='fb'; $('#hintBox').className='hintbox';
+  $('#bNext').style.display='none'; $('#bCheck').style.display='none';
+  $('#bHint').disabled=G.hint; $('#bHalf').disabled=G.half||q.t!=='mc';
+  const body=$('#qBody');
+  if(q.t==='mc'){
+    const order=shuffle(q.o.map((o,j)=>j));
+    body.innerHTML=`<div class="opts ${q.o.some(o=>o.length>26)?'one':''}">${order.map((j,n)=>`<button class="opt" data-j="${j}"><span class="k">${'أبجد'[n]}</span><span>${q.o[j]}</span></button>`).join('')}</div>`;
+    $$('#qBody .opt').forEach(b=>b.onclick=()=>answer(+b.dataset.j===0,b,$(`#qBody .opt[data-j="0"]`)));
+  } else if(q.t==='tf'||q.t==='fo'){
+    const L=q.t==='tf'?[['✔️ صواب',true],['✖️ خطأ',false]]:[['📌 حقيقة',0],['💭 رأي',1]];
+    body.innerHTML=`<div class="opts tfopts">${L.map(([l,v],n)=>`<button class="opt" data-n="${n}">${l}</button>`).join('')}</div>`;
+    const right=L.findIndex(([l,v])=>v===q.a);
+    $$('#qBody .opt').forEach((b,n)=>b.onclick=()=>answer(n===right,b,$$('#qBody .opt')[right]));
+  } else if(q.t==='sort') renderSort(q,body);
+  else if(q.t==='chain') renderChain(q,body);
+}
+function renderSort(q,body){
+  const items=shuffle(q.items.map((it,j)=>({n:it[0],b:it[1],j})));
+  G.place={}; let sel=null;
+  body.innerHTML=`<div class="hintline">اضغطي على الكلمة، ثم على الصندوق المناسب</div><div class="pool" id="pool"></div><div class="bins">${q.bins.map((b,k)=>`<div class="bin" data-k="${k}"><h4>${b}</h4></div>`).join('')}</div>`;
+  const draw=()=>{
+    $('#pool').innerHTML=items.filter(it=>G.place[it.j]===undefined).map(it=>`<button class="item ${sel===it.j?'sel':''}" data-j="${it.j}">${it.n}</button>`).join('')||'<span style="color:var(--muted);font-weight:700;align-self:center">تمّ التصنيف ✓</span>';
+    $$('.bin').forEach(bn=>{const k=+bn.dataset.k; bn.innerHTML=`<h4>${q.bins[k]}</h4>`+items.filter(it=>G.place[it.j]===k).map(it=>`<button class="item" data-j="${it.j}" data-in="1">${it.n}</button>`).join(''); bn.classList.toggle('hot',sel!==null)});
+    $$('#qBody .item').forEach(b=>b.onclick=e=>{ e.stopPropagation(); if(G.answered) return; const j=+b.dataset.j; SND.click();
+      if(b.dataset.in){ delete G.place[j]; sel=j } else sel= sel===j?null:j; draw() });
+    $('#bCheck').style.display=Object.keys(G.place).length===items.length&&!G.answered?'':'none';
+  };
+  body.onclick=e=>{ const bn=e.target.closest('.bin'); if(!bn||sel===null||G.answered) return; G.place[sel]=+bn.dataset.k; sel=null; SND.click(); draw() };
+  $('#bCheck').onclick=()=>{ if(G.answered) return; const ok=items.every(it=>G.place[it.j]===it.b);
+    $$('.bin .item').forEach(b=>{const it=items.find(x=>x.j===+b.dataset.j); b.classList.add(G.place[it.j]===it.b?'ok':'bad')});
+    $('#bCheck').style.display='none'; answer(ok,$('.bins'),null) };
+  draw();
+}
+function renderChain(q,body){
+  const items=shuffle(q.items.map((n,j)=>({n,j}))); G.seq=[];
+  body.innerHTML=`<div class="hintline">اضغطي على المخلوقات بالترتيب: مَن يُؤكَل أولًا؟</div><div class="chainrow" id="crow"></div><div class="pool" id="cpool"></div><div style="text-align:center"><button class="ghost" id="cClr">↺ مسح الترتيب</button></div>`;
+  const draw=()=>{
+    $('#crow').innerHTML=q.items.map((_,k)=>{const j=G.seq[k]; return (k?'<span class="arr">←</span>':'')+`<span class="slot ${j!==undefined?'f':''}" data-k="${k}">${j!==undefined?q.items[j]:ar(k+1)}</span>`}).join('');
+    $('#cpool').innerHTML=items.map(it=>`<button class="item ${G.seq.includes(it.j)?'used':''}" data-j="${it.j}">${it.n}</button>`).join('');
+    $$('#cpool .item').forEach(b=>b.onclick=()=>{ if(G.answered) return; G.seq.push(+b.dataset.j); SND.click(); draw() });
+    $('#bCheck').style.display=G.seq.length===q.items.length&&!G.answered?'':'none';
+  };
+  $('#cClr').onclick=()=>{ if(G.answered) return; G.seq=[]; draw() };
+  $('#bCheck').onclick=()=>{ if(G.answered) return; const ok=G.seq.every((j,k)=>j===k);
+    $$('#crow .slot').forEach((s,k)=>s.classList.add(G.seq[k]===k?'ok':'bad'));
+    $('#bCheck').style.display='none'; $('#cClr').disabled=true; answer(ok,$('#crow'),null) };
+  draw();
+}
+function answer(ok,el,rightEl){
+  if(G.answered) return; G.answered=true;
+  const q=G.s.qs[G.k];
+  $$('#qBody .opt').forEach(b=>b.disabled=true);
+  if(ok){
+    G.correct++; G.streak++; G.maxStreak=Math.max(G.maxStreak,G.streak);
+    const bonus=G.streak>=3?5:0; G.pts+=10+bonus;
+    if(el.classList.contains('opt')) el.classList.add('ok');
+    SND.ok(); $('#qcard').classList.add('glow'); setTimeout(()=>$('#qcard').classList.remove('glow'),800);
+    const r=el.getBoundingClientRect(); confetti(bonus?45:25,r.left+r.width/2,r.top+r.height/2,.8);
+    floatText('+'+B(ar(10+bonus)),el);
+  } else {
+    G.streak=0; G.wrong.push(q);
+    if(el.classList.contains('opt')) el.classList.add('bad');
+    if(rightEl) rightEl.classList.add('ok');
+    SND.bad(); $('#qcard').classList.add('shake'); setTimeout(()=>$('#qcard').classList.remove('shake'),500);
+  }
+  G.res[G.k]=ok;
+  const st=$('#streak'); st.style.visibility=G.streak>=2?'visible':'hidden'; $('#stN').textContent=ar(G.streak); st.classList.remove('streak'); void st.offsetWidth; if(G.streak>=2) st.classList.add('streak');
+  const fb=$('#fb'); fb.className='fb on '+(ok?'ok':'bad');
+  fb.innerHTML=`<b class="t">${ok?PRAISE[Math.random()*PRAISE.length|0]+(G.streak>=3?' 🔥 مكافأة السلسلة':''):'لا بأس، لنتعلّم معًا 💪'}</b>${q.x}<br><span class="pg">📖 كتاب العلوم ص ${q.p}</span>`;
+  $('#prog i:nth-child('+(G.k+1)+')').className=ok?'ok':'bad';
+  $('#bNext').textContent=G.k===9?'النتيجة 🏁':'التالي ←'; $('#bNext').style.display='';
+  $('#bHint').disabled=true; $('#bHalf').disabled=true;
+  updHud();
+  setTimeout(()=>fb.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+$('#bNext').onclick=()=>{ SND.click(); if(G.k<9){G.k++; renderQ()} else endStage() };
+$('#bHint').onclick=()=>{ if(G.hint||G.answered) return; G.hint=true; $('#bHint').disabled=true; SND.hint(); const q=G.s.qs[G.k];
+  const hb=$('#hintBox'); hb.innerHTML='💡 '+(q.h||'')+' عودي إلى كتابكِ <b>ص '+q.p+'</b>.'; hb.className='hintbox on' };
+$('#bHalf').onclick=()=>{ const q=G.s.qs[G.k]; if(G.half||G.answered||q.t!=='mc') return; G.half=true; $('#bHalf').disabled=true; SND.hint();
+  shuffle($$('#qBody .opt').filter(b=>b.dataset.j!=='0')).slice(0,2).forEach(b=>b.classList.add('gone')) };
+
+function endStage(){
+  G.done=true; const s=G.s, stars=starsOf(G.correct);
+  const prev=P.best[s.id]; if(!prev||G.pts>prev.pts) P.best[s.id]={stars:Math.max(stars,prev?.stars||0),pts:G.pts,correct:G.correct}; else prev.stars=Math.max(prev.stars,stars);
+  save();
+  $('#resIc').textContent=s.ic;
+  $('#resT').textContent= stars===3?'مذهلة! أتممتِ '+s.name:stars===2?'أحسنتِ! أتممتِ '+s.name:stars===1?'جيد! أتممتِ '+s.name:'أتممتِ '+s.name+'، راجعي وحاولي مرة أخرى';
+  $('#rC').innerHTML=B(ar(G.correct)+' / '+ar(10)); $('#rP').innerHTML=B(ar(G.pts)); $('#rS').innerHTML=B(ar(G.maxStreak));
+  $('#rRev').innerHTML=G.wrong.length?'<b style="font-size:16px">راجعي هذه الأفكار:</b>'+G.wrong.map(q=>`<div>${q.x} <span style="color:var(--muted);font-size:13px">(ص ${q.p})</span></div>`).join(''):'';
+  const sp=$$('#resStars span'); sp.forEach(x=>x.classList.remove('on'));
+  sp.forEach((x,k)=>{ if(k<stars) setTimeout(()=>{x.classList.add('on'); SND.star(k)},500+k*450) });
+  const last=G.i===STAGES.length-1;
+  $('#bOn').textContent= last?'🏅 الشهادة':'المحطة التالية ←';
+  $('#bOn').onclick=()=>{ SND.click(); if(last) showCert(); else startStage(G.i+1) };
+  $('#bAgain').onclick=()=>{ SND.click(); startStage(G.i) };
+  show('sRes');
+  setTimeout(()=>{ if(stars>=2){ SND.win(); confetti(stars===3?160:80,innerWidth/2,innerHeight/3,1.4) } }, 500+stars*450);
+}
+function showCert(){
+  setScene('map');
+  $('#cName').textContent=P.name; $('#cStars').innerHTML=B(ar(totalStars())+' / '+ar(12)); $('#cPts').innerHTML=B(ar(totalPts()));
+  $('#cRow').innerHTML=STAGES.map(s=>`<span>${s.ic} ${[0,1,2].map(k=>`<span class="${k<(P.best[s.id]?.stars||0)?'':'off'}">⭐</span>`).join('')}</span>`).join('');
+  let d; try{ d=new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'}) }catch(e){ d=new Date().toLocaleDateString() }
+  $('#cDate').textContent=d;
+  show('sCert'); SND.win(); confetti(150,innerWidth/2,innerHeight/3,1.4);
+}
+updHud();
+})();
+</script>
+</body>
+</html>
